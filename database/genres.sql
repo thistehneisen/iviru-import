@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 07, 2017 at 06:49 PM
+-- Generation Time: Nov 16, 2017 at 11:41 AM
 -- Server version: 5.7.19-0ubuntu0.16.04.1
--- PHP Version: 7.1.9-1+ubuntu16.04.1+deb.sury.org+1
+-- PHP Version: 7.1.10-1+ubuntu16.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -34,8 +34,6 @@ CREATE TABLE `genres` (
   `title_friendly` varchar(256) CHARACTER SET utf8 DEFAULT NULL,
   `provider` varchar(128) CHARACTER SET utf8 DEFAULT NULL,
   `provider_id` int(11) DEFAULT NULL,
-  `category_id` int(11) DEFAULT NULL,
-  `extra_data` longtext CHARACTER SET utf8,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -49,7 +47,8 @@ CREATE TABLE `genres` (
 --
 ALTER TABLE `genres`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `provider_id` (`provider_id`);
+  ADD UNIQUE KEY `provider_id` (`provider_id`),
+  ADD UNIQUE KEY `provider` (`provider`,`provider_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
