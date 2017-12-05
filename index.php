@@ -15,7 +15,8 @@ $database['config'] = array (
 
 $providers = array(
     'ivi' => 'https://api.ivi.ru/mobileapi/categories/v5/',
-    'tvzaur' => 'http://api.tvzavr.ru/api/3.0/catalog/list_filters?plf=tdm&type=genre'
+    'tvzaur' => 'http://api.tvzavr.ru/api/3.0/catalog/list_filters?plf=tdm&type=genre',
+    'start' => 'https://api.start.ru/web/genres?apikey=12fc4c5e5b2640b1995f6468b6a11deb'
 );
 
 $data = array(
@@ -29,6 +30,12 @@ $data = array(
         'key' => 'catalog_list_filters',
         'title' => 'mark__name',
         'provider_id' => 'mark__id'
+    ),
+    'start' => array(
+        'key' => NULL,
+        'title' => 'title',
+        'provider_id' => '_id',
+        'title_friendly' => 'url'
     )
 );
 
@@ -54,17 +61,21 @@ foreach ($providers as $provider => $remote_url) {
     }
 
     $contents = json_decode($contents, true);
-    $contents = $contents['result'];
+    $contents = !empty($contents['result']) ? $contents['result'] : $contents;
 
     if (!is_array($contents)) {
         apilog("Retrieved data for {$provider} is not a valid JSON string, skipping.");
         continue;
     }
 
-    (array)$records = array_column($contents, $data[$provider]['key']);
+    if ($data[$provider]['key'] !== NULL) {
+        (array)$records = array_column($contents, $data[$provider]['key']);
 
-    if (!count($records))
-        $records = array($contents[$data[$provider]['key']]);
+        if (!count($records))
+            $records = array($contents[$data[$provider]['key']]);
+    } else {
+        $records = array($contents);
+    }
     
     (int)$count = 0;
 
