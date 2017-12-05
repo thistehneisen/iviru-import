@@ -22,6 +22,7 @@ $providers = array(
 $data = array(
     'ivi' => array(
         'key' => 'genres',
+        'movies' => 'https://api.ivi.ru/mobileapi/catalogue/v5/?genre={id}',
         'title' => 'title',
         'title_friendly' => 'hru',
         'provider_id' => 'id'
@@ -33,6 +34,7 @@ $data = array(
     ),
     'start' => array(
         'key' => NULL,
+        'movies' => 'https://api.start.ru/web/genres/{id}?apikey=12fc4c5e5b2640b1995f6468b6a11deb',
         'title' => 'title',
         'provider_id' => '_id',
         'title_friendly' => 'url'
@@ -84,15 +86,43 @@ foreach ($providers as $provider => $remote_url) {
             $insert = array('provider' => $provider);
         
             foreach ($data[$provider] as $to => $from) {
-                if ($to === 'key')
+                if ($to === 'key' || $to === 'movies')
                     continue;
                 
                 $insert[$to] = $genre[$from];
             }
 
             $db->insert('genres', $insert, true);
-
             $count++;
+
+            if (!empty($data[$provider]['movies'])) {
+                $url = str_replace('{id}', $insert['provider_id'], $data[$provider]['movies']);
+                try {
+                    $contents = file_get_contents($url);
+                    
+                    if ($contents === false) {
+                        apilog("Unable to retrieve movies for {$provider} on genre ID {$insert['provider_id']} at {$url}, skipping.");
+                        continue;
+                    }
+                } catch (Exception $e) {
+                    apilog("Unable to retrieve movies for {$provider} on genre ID {$insert['provider_id']} at {$url}, skipping. ".$e->getMessage());
+                    continue;
+                }
+
+                $contents = json_decode($contents, true);
+                $contents = !empty($contents['result']) ? $contents['result'] : $contents;
+            
+                if (!is_array($contents)) {
+                    apilog("Retrieved movie data for {$provider} on genre ID {$insert['provider_id']} at {$url} is not a valid JSON string, skipping.");
+                    continue;
+                }
+
+                $db->insert('movies', array(
+                    'provider' => $provider,
+                    'genre_id' => $insert['provider_id'],
+                    'data' => json_encode($contents)
+                ), true);
+            }
         }
     }
 
