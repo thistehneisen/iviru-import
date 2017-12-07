@@ -5,7 +5,9 @@ require_once '../vendor/db.class.php';
 require_once '../config.php';
 
 $db = new db($database['config'], '_read');
+$provider = 'ivi';
 
+$genres = $db->getRows("SELECT `title`,`provider_id` FROM %s WHERE `provider`='%s'", $db->table('genres'), $provider);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -1294,47 +1296,14 @@ $db = new db($database['config'], '_read');
                 <div class="js---filter-item" data-filter-type="genre">
                     <ul data-hint="Жанр"
                         data-hint-desktop="Жанр"
-                        data-hint-mobile="Любой">
-
-                        <li data-text-desktop="Жанр"
-                            data-text-mobile="Любой">
-                            Любой
+                        data-hint-mobile="Жанр">
+<?php foreach ($genres as $genre) { ?>
+                        <li data-text-desktop="<?php print($genre['title'])?>"
+                            data-text-mobile="<?php print($genre['title'])?>"
+                            data-provider-id="<?php print($genre['provider_id'])?>">
+                            <?php print($genre['title'])?>
                         </li>
-
-                        <li data-text-desktop="Комедии"
-                            data-text-mobile="Комедии">
-                            Комедии
-                        </li>
-
-                        <li data-text-desktop="Семейные"
-                            data-text-mobile="Семейные">
-                            Семейные
-                        </li>
-
-                        <li data-text-desktop="Вестерны"
-                            data-text-mobile="Вестерны">
-                            Вестерны
-                        </li>
-
-                        <li data-text-desktop="Ужасы"
-                            data-text-mobile="Ужасы">
-                            Ужасы
-                        </li>
-
-                        <li data-text-desktop="Фантастика"
-                            data-text-mobile="Фантастика">
-                            Фантастика
-                        </li>
-
-                        <li data-text-desktop="Приключения"
-                            data-text-mobile="Приключения">
-                            Приключения
-                        </li>
-
-                        <li data-text-desktop="Детективы"
-                            data-text-mobile="Детективы">
-                            Детективы
-                        </li>
+<?php } ?>
                     </ul>
                 </div>
 

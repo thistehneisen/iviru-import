@@ -80,11 +80,19 @@ foreach ($providers as $provider => $remote_url) {
                     continue;
                 }
 
-                $db->insert('movies', array(
-                    'provider' => $provider,
-                    'genre_id' => $insert['provider_id'],
-                    'data' => json_encode($contents)
-                ), true);
+                $items = ($provider == 'ivi' ? $contents : $contents['items'][0]['items']);
+
+                foreach ($items as $item) {
+                    $db->insert('movies', array(
+                        'provider' => $provider,
+                        'genre_id' => $insert['provider_id'],
+                        'title' => $item['title'],
+                        'description' => $item['description'],
+                        'year' => (!empty($item['year']) ? $item['year'] : NULL),
+                        'country' => (!empty($item['country']) ? $item['country'] : NULL),
+                        'data' => json_encode($item)
+                    ), true);
+                }
             }
         }
     }

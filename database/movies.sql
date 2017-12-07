@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.7.5
+-- version 4.7.6
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 05, 2017 at 06:44 PM
--- Server version: 5.7.19-0ubuntu0.16.04.1
--- PHP Version: 7.1.10-1+ubuntu16.04.1+deb.sury.org+1
+-- Generation Time: Dec 07, 2017 at 05:41 PM
+-- Server version: 5.7.20-0ubuntu0.16.04.1
+-- PHP Version: 7.2.0-1+ubuntu16.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -32,7 +32,11 @@ CREATE TABLE `movies` (
   `id` int(11) NOT NULL,
   `provider` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `genre_id` int(11) NOT NULL,
-  `data` longtext COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `year` int(11) DEFAULT NULL,
+  `country` int(11) DEFAULT NULL,
+  `data` longtext COLLATE utf8_unicode_ci,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
