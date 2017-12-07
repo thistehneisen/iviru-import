@@ -326,7 +326,7 @@ class db
 				if (is_string($val) && !is_numeric($val) && !($val == 'NULL' || $val == 'null')):
 					$val = mysqli_real_escape_string($this->connection,$val);
 					$sql[] = "`{$key}`='{$val}'";
-				elseif(is_string($val) && ($val == 'NULL' || $val == 'null')):
+				elseif(is_null($val) || (is_string($val) && ($val == 'NULL' || $val == 'null'))):
 					$sql[] = "`{$key}`= NULL";
 				else:
 					$sql[] = "`{$key}`='{$val}'";
