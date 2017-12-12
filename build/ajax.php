@@ -10,18 +10,25 @@ foreach ((array)$_GET['filter'] as $key => $filter) {
     $filters[$key] = $filter;
 }
 
-$result = $db->getRows("SELECT * FROM %s");
+$result = $db->getRows("SELECT * FROM %s", $db->table('movies'));
 $response = array();
 foreach ((array)$result as $entry) {
-    if ($entry['provider'] == 'ivi') {
-        $response[] = array(
+    $tmpResponse = array(
+        'title' => $entry['title'],
+        'description' => $entry['description'],
+        'year' => $entry['year'],
+        'country' => $entry['country'],
+        'genre_id' => $entry['genre_id'],
+        'provider' => $entry['provider']
+    );
 
-        );
-    } else if ($entry['provider'] == 'start') {
-        $response[] = array(
-
-        );
+    $jsonData = json_decode($entry['data'], true);
+    foreach ($jsonReturnData[$entry['provider']] as $from => $to) {
+        if (!empty($jsonData[$from]))
+            $tmpResponse[$to] = $jsonData[$from];
     }
+
+    $response[] = $tmpResponse;
 }
 
-print_r(json_encode($response), true);
+print(json_encode($response));

@@ -1616,6 +1616,13 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 <script src="js/vendor/develex/heightEqualizer.js"></script>
 <script src="js/vendor/jquery.sticky.js"></script>
 <script src="js/script.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>}, function(response){
+        console.log(response);
+    });
+});
+</script>
 
 </body>
 

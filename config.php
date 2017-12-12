@@ -37,4 +37,17 @@ $data = array(
     )
 );
 
+$jsonReturnData = array(
+    'ivi' => array(
+        //'thumbnails[0]["path"]' => 'thumb',
+        'imdb_rating' => 'imdb_rating',
+        'kp_rating' => 'kp_rating'
+    ),
+    'start' => array(
+        //'vertical["image_15x"]' => 'thumb',
+        'rating_imdb' => 'imdb_rating',
+        'rating_kp' => 'kp_rating'
+    )
+);
+
 $perPage = 15;
