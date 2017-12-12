@@ -37,3 +37,4 @@ $data = array(
     )
 );
 
+$perPage = 15;
