@@ -1363,7 +1363,7 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
             <div class="profile-content_block_wrapper js---grid-block" id="cinema-items"></div>
         </div>
 
-        <a href="" class="btn content-list__btn">
+        <a href="" class="btn content-list__btn load-more">
             Загрузить еще
         </a>
 
@@ -1610,7 +1610,17 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 <script src="js/script.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
-    $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>}, function(response){
+    page = 0;
+    loadData();
+});
+
+$(document).on('click', '.load-more', function(e){
+    e.preventDefault();
+    loadData();
+});
+
+function loadData() {
+    $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>, 'page':page}, function(response){
         $.each(response, function(k,v){
             var element = $('#item-template').children().clone().hide().appendTo('#cinema-items');
             element.find('.item-name').text(v.title);
@@ -1630,8 +1640,10 @@ $(document).ready(function(){
 
             element.fadeIn();
         });
+
+        page++;
     });
-});
+}
 </script>
 
 </body>
