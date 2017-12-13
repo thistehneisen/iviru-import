@@ -6,11 +6,21 @@ require_once '../config.php';
 
 $db = new db($database['config'], '_read');
 
+$where = array();
 foreach ((array)$_GET['filter'] as $key => $filter) {
-    $filters[$key] = $filter;
+    if (in_array($key, $allowedFilters)) {
+        $key = $db->escape($key);
+        $filter = $db->escape($filter);
+        $where[] = "`{$key}`='$filter'";
+    }
 }
 
-$result = $db->getRows("SELECT * FROM %s", $db->table('movies'));
+if (count($where)) {
+    $where = join(' AND ', $where);
+    $where = ' WHERE ' . $where;
+}
+
+$result = $db->getRows("SELECT * FROM %s".$where, $db->table('movies'));
 $response = array();
 foreach ((array)$result as $entry) {
     $tmpResponse = array(

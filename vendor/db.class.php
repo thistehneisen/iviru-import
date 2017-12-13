@@ -186,7 +186,7 @@ class db
             unset($func_get_args[0]);
             foreach ($func_get_args as $arg) {
                 if (is_string($arg) && !is_numeric($arg)) {
-                    $args[] = mysqli_real_escape_string($this->connection, $arg);
+                    $args[] = $this->escape($arg);
                 } else {
                     $args[] = $arg;
                 }
@@ -229,7 +229,7 @@ class db
             unset($func_get_args[0]);
             foreach ($func_get_args as $arg) {
                 if (is_string($arg) && !is_numeric($arg)) {
-                    $args[] = mysqli_real_escape_string($this->connection, $arg);
+                    $args[] = $this->escape($arg);
                 } else {
                     $args[] = $arg;
                 }
@@ -256,7 +256,7 @@ class db
             unset($func_get_args[0]);
             foreach ($func_get_args as $arg) {
                 if (is_string($arg) && !is_numeric($arg)) {
-                    $args[] = mysqli_real_escape_string($this->connection, $arg);
+                    $args[] = $this->escape($arg);
                 } else {
                     $args[] = $arg;
                 }
@@ -293,7 +293,7 @@ class db
                 $sql = array();
                 foreach ($values as $key => $val) {
                     if (is_string($val) && !is_numeric($val) && !($val == 'NULL' || $val == 'null')):
-						$val = mysqli_real_escape_string($this->connection,$val);
+						$val = $this->escape($val);
 						$sql[] = "`{$key}`='{$val}'";
 					elseif(is_string($val) && ($val == 'NULL' || $val == 'null')):
 						$sql[] = "`{$key}`= NULL";
@@ -304,7 +304,7 @@ class db
                 }
                 if (is_array($where)) {
                     foreach ($where as $key => $val) {
-                        if (is_string($val) && !is_numeric($val)) $val = mysqli_real_escape_string($this->connection,$val);
+                        if (is_string($val) && !is_numeric($val)) $val = $this->escape($val);
                         $where_q[] = "`{$key}`='{$val}'";
                     }
                     $where = join(" AND ",$where_q);
@@ -324,7 +324,7 @@ class db
             $sql = array();
 			foreach ($values as $key => $val) {
 				if (is_string($val) && !is_numeric($val) && !($val == 'NULL' || $val == 'null')):
-					$val = mysqli_real_escape_string($this->connection,$val);
+					$val = $this->escape($val);
 					$sql[] = "`{$key}`='{$val}'";
 				elseif(is_null($val) || (is_string($val) && ($val == 'NULL' || $val == 'null'))):
 					$sql[] = "`{$key}`= NULL";
@@ -353,6 +353,10 @@ class db
                 "key" => strtolower($key),
                 "value" => $val
             ), true);
+    }
+
+    function escape($str) {
+        return mysqli_real_escape_string($this->connection, $str);
     }
     
     function __destruct()

@@ -50,4 +50,6 @@ $jsonReturnData = array(
     )
 );
 
+$allowedFilters = array('provider', 'year', 'country', 'genre');
+
 $perPage = 15;
