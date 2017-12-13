@@ -1556,7 +1556,7 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 </div>
 
 <div id="item-template" style="display: none;">
-    <div class="profile-content_block__cinema_item  js---grid-item">
+    <div class="profile-content_block__cinema_item js---grid-item">
         <div class="item">
             <article class="content-item">
                 <div class="content-item__wrap">
@@ -1612,7 +1612,23 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 $(document).ready(function(){
     $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>}, function(response){
         $.each(response, function(k,v){
-            var element = $('#item-template').children().clone().appendTo('#cinema-items');
+            var element = $('#item-template').children().clone().hide().appendTo('#cinema-items');
+            element.find('.item-name').text(v.title);
+
+            if (v.thumb)
+                element.find('.item-image').attr('src', v.thumb);
+            else
+                element.find('.item-image').attr('src', 'data:;');
+            if (v.year)
+                element.find('.item-year').text(v.year);
+            else
+                element.find('.item-year').hide();
+            if (v.country)
+                element.find('.item-country').text(v.country);
+            else
+                element.find('.item-country').hide();
+
+            element.fadeIn();
         });
     });
 });

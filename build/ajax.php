@@ -33,6 +33,10 @@ foreach ((array)$result as $entry) {
     );
 
     $jsonData = json_decode($entry['data'], true);
+
+    if ($entry['provider'] == 'ivi')
+        $tmpResponse['thumb'] = $jsonData['thumbnails'][0]["path"];
+
     foreach ($jsonReturnData[$entry['provider']] as $from => $to) {
         if (!empty($jsonData[$from]))
             $tmpResponse[$to] = $jsonData[$from];
