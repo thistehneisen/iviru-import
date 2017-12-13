@@ -20,7 +20,15 @@ if (count($where)) {
     $where = ' WHERE ' . $where;
 }
 
-$result = $db->getRows("SELECT * FROM %s".$where, $db->table('movies'));
+if (!empty($_GET['page']) && is_numeric($_GET['page'])) {
+    $limit['from'] = ($perPage * min((int)$_GET['page']));
+    $limit['to'] = ($limit['from'] + $perPage);
+} else {
+    $limit['from'] = 0;
+    $limit['to'] = $perPage;
+}
+
+$result = $db->getRows("SELECT * FROM %s".$where." LIMIT %d,%d", $db->table('movies'), $limit['from'], $limit['to']);
 $response = array();
 foreach ((array)$result as $entry) {
     $tmpResponse = array(
