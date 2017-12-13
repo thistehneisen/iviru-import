@@ -1348,8 +1348,6 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
                     <ul data-hint="Категория"
                         data-hint-desktop="Категория"
                         data-hint-mobile="Популярные">
-
-
                     </ul>
 
                     <div class="js---filter-sort-by-date">
@@ -1362,54 +1360,10 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 
     <div class="content-list__wrap">
         <div class="wrapper">
-            <div class="profile-content_block_wrapper  js---grid-block">
-                <div class="profile-content_block__cinema_item  js---grid-item">
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-56.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                      <span>
-                        <b>5.5</b> КиноПоиск
-                      </span>
-                                        <span>
-                        <b>5.6</b> IMDb
-                      </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h2 class="content-item__name">
-                                <a href="#">
-                                    Все путем
-                                </a>
-                            </h2>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2014
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Венгрия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Драма
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-                </div><!-- end cinema-item -->
-            </div>
+            <div class="profile-content_block_wrapper js---grid-block" id="cinema-items"></div>
         </div>
 
-        <a href="" class="btn  content-list__btn">
+        <a href="" class="btn content-list__btn">
             Загрузить еще
         </a>
 
@@ -1601,6 +1555,44 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
   </p>
 </div>
 
+<div id="item-template" style="display: none;">
+    <div class="profile-content_block__cinema_item  js---grid-item">
+        <div class="item">
+            <article class="content-item">
+                <div class="content-item__wrap">
+                    <img src="img/content-image-56.jpg" class="content-item__image item-image" alt="">
+
+                    <a href="#" class="content-item__hide-info">
+                        <div class="content-item__price">
+                            Купить<br>
+                            <strong>от <span class="item-price"></span>€</strong>
+                        </div>
+
+                        <div class="content-item__rating">
+                            <span>
+                                <b class="item-kp"></b> КиноПоиск
+                            </span>
+                            <span>
+                                <b class="item-imdb"></b> IMDb
+                            </span>
+                        </div>
+                    </a>
+                </div>
+
+                <h2 class="content-item__name">
+                    <a href="#" class="item-name"></a>
+                </h2>
+
+                <div class="content-item__info">
+                    <a href="#" class="content-item__info-item item-year"></a>
+                    <a href="#" class="content-item__info-item item-country"></a>
+                    <a href="#" class="content-item__info-item content-item__info-item--genre item-genre"></a>
+                </div>
+            </article>
+        </div>
+    </div><!-- end cinema-item -->
+</div>
+
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
         crossorigin="anonymous">
@@ -1619,7 +1611,9 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 <script type="text/javascript">
 $(document).ready(function(){
     $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>}, function(response){
-        console.log(response);
+        $.each(response, function(k,v){
+            var element = $('#item-template').children().clone().appendTo('#cinema-items');
+        });
     });
 });
 </script>
