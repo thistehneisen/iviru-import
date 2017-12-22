@@ -25,6 +25,7 @@ $data = array(
     ),
     'tvzaur' => array(
         'key' => 'catalog_list_filters',
+        'movies' => 'http://api.tvzavr.ru/api/3.0/catalog/get?limit=100&offset=0&plf=tdm&cats={id}',
         'title' => 'mark__name',
         'provider_id' => 'mark__id'
     ),
@@ -47,6 +48,10 @@ $jsonReturnData = array(
         //'vertical["image_15x"]' => 'thumb',
         'rating_imdb' => 'imdb_rating',
         'rating_kp' => 'kp_rating'
+    ),
+    'tvzaur' => array(
+        'clip__imdb_rate' => 'imdb_rating',
+        'clip__kp_rate' => 'kp_rating'
     )
 );
 
