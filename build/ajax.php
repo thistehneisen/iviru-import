@@ -40,9 +40,11 @@ foreach ((array)$result as $entry) {
     $jsonData = json_decode($entry['data'], true);
 
     if ($entry['provider'] == 'ivi')
-        $tmpResponse['thumb'] = $jsonData['thumbnails'][0]["path"];
+        $tmpResponse['thumb'] = $jsonData['thumbnails'][0]['path'];
     else if ($entry['provider'] == 'start')
         $tmpResponse['thumb'] = 'https://api.start.ru/'.$jsonData['vertical']['image_15x'];
+    else if ($entry['provider'] == 'tvzaur')
+        $tmpResponse['thumb'] = $jsonData['image_vertical'];
 
     foreach ($jsonReturnData[$entry['provider']] as $from => $to) {
         if (!empty($jsonData[$from]))
