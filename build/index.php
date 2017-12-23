@@ -5,7 +5,10 @@ require_once '../vendor/db.class.php';
 require_once '../config.php';
 
 $db = new db($database['config'], '_read');
-$provider = 'ivi';
+if (!empty($_GET['provider']) && in_array($_GET['provider'], array_keys($data)))
+    $provider = $_GET['provider'];
+else
+    $provider = 'ivi';
 
 $genres     = $db->getRows("SELECT `title`,`provider_id` FROM %s WHERE `provider`='%s'", $db->table('genres'), $provider);
 $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'", $db->table('movies'), $provider);

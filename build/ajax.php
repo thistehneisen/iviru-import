@@ -41,6 +41,8 @@ foreach ((array)$result as $entry) {
 
     if ($entry['provider'] == 'ivi')
         $tmpResponse['thumb'] = $jsonData['thumbnails'][0]["path"];
+    else if ($entry['provider'] == 'start')
+        $tmpResponse['thumb'] = 'https://api.start.ru/'.$jsonData['vertical']['image_15x'];
 
     foreach ($jsonReturnData[$entry['provider']] as $from => $to) {
         if (!empty($jsonData[$from]))
