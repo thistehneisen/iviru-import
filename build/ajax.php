@@ -25,7 +25,11 @@ if (!empty($_GET['page']) && is_numeric($_GET['page']))
 else
     $limit['offset'] = 0;
 
-$result = $db->getRows("SELECT * FROM %s".$where." LIMIT %d,%d", $db->table('movies'), $limit['offset'], $perPage);
+if (!empty($_GET['features']) && $_GET['features'] == true)
+    $result = $db->getRows("SELECT * FROM %s".$where." ORDER BY `rating` DESC LIMIT %d,%d", $db->table('movies'), 0, $featureCount);
+else
+    $result = $db->getRows("SELECT * FROM %s".$where." LIMIT %d,%d", $db->table('movies'), $limit['offset'], $perPage);
+
 $response = array();
 foreach ((array)$result as $entry) {
     $tmpResponse = array(

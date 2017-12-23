@@ -58,4 +58,5 @@ $jsonReturnData = array(
 $allowedFilters = array('provider', 'year', 'country', 'genre');
 
 $perPage        = 15;
-$noImageSrc     = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+$featureCount   = 10;
+$noImageSrc     = 'img/noimage.png';

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 07, 2017 at 05:41 PM
+-- Generation Time: Dec 23, 2017 at 01:20 PM
 -- Server version: 5.7.20-0ubuntu0.16.04.1
 -- PHP Version: 7.2.0-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -36,6 +36,7 @@ CREATE TABLE `movies` (
   `description` text COLLATE utf8_unicode_ci,
   `year` int(11) DEFAULT NULL,
   `country` int(11) DEFAULT NULL,
+  `rating` float(2,1) DEFAULT NULL,
   `data` longtext COLLATE utf8_unicode_ci,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
