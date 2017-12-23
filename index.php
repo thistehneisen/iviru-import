@@ -89,7 +89,7 @@ foreach ($providers as $provider => $remote_url) {
                         'title' => ($provider == 'tvzaur' ? $item['clip__name'] : $item['title']),
                         'description' => ($provider == 'tvzaur' ? $item['clip__description'] : $item['description']),
                         'year' => ($provider == 'tvzaur' ? $item['years'][0]['mark__name'] : (!empty($item['year']) ? $item['year'] : NULL)),
-                        'country' => ($provider == 'tvzaur' ? (!empty($item['countries'][0]['mark__id']) ? $item['countries'][0]['mark__id'] : NULL) : (!empty($item['country']) ? $item['country'] : NULL)),
+                        'country' => ($provider == 'tvzaur' ? (!empty($item['countries'][0]['mark__name']) ? $item['countries'][0]['mark__name'] : NULL) : (!empty($item['country']) ? $item['country'] : NULL)),
                         'data' => json_encode($item)
                     ), true);
                 }

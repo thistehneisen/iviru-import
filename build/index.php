@@ -12,6 +12,7 @@ else
 
 $genres     = $db->getRows("SELECT `title`,`provider_id` FROM %s WHERE `provider`='%s'", $db->table('genres'), $provider);
 $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s' ORDER BY `year` DESC", $db->table('movies'), $provider);
+$countries  = $db->getRows("SELECT DISTINCT `country` FROM %s WHERE `provider`='%s' ORDER BY `country` ASC", $db->table('movies'), $provider);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -995,6 +996,10 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
                 <option value="null">- Show all -</option>
                  <?php foreach ($years as $year) if (!empty($year['year'])) print("<option value=\"{$year['year']}\">{$year['year']}</option>"); ?>
             </select>
+            <select name="country">
+                <option value="null">- Show all -</option>
+                 <?php foreach ($countries as $country) if (!empty($country['country']) && !is_numeric($country['country'])) print("<option value=\"{$country['country']}\">{$country['country']}</option>"); ?>
+            </select>
             <div class="js---filter-container  filter--with-date  filter--layout  filter--left-align">
                 <div class="js---filter-item" data-filter-type="genre">
                     <ul data-hint="Жанр"
@@ -1351,6 +1356,7 @@ $(document).ready(function(){
     filter = Array;
     filter['year'] = null;
     filter['genre'] = null;
+    filter['country'] = null;
     page = 0;
     loadFeatures();
     loadData();
@@ -1374,6 +1380,17 @@ $(document).on('change', 'select[name="genre"]', function(e){
         unset(filter['genre']);
     else
         filter['genre'] = val;
+
+    loadData(true, true);
+});
+
+$(document).on('change', 'select[name="country"]', function(e){
+    var val = $(this).val();
+
+    if (val == null)
+        unset(filter['country']);
+    else
+        filter['country'] = val;
 
     loadData(true, true);
 });
@@ -1421,7 +1438,7 @@ function loadData(resetPages = false, clearContent = false) {
     if (resetPages == true)
         page = 0;
 
-    $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>, 'filter[year]':filter['year'], 'filter[genre_id]':filter['genre'], 'page':page}, function(response){
+    $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>, 'filter[year]':filter['year'], 'filter[genre_id]':filter['genre'], 'filter[country]':filter['country'], 'page':page}, function(response){
         if (clearContent == true)
             clearData();
 
