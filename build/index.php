@@ -1560,7 +1560,7 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
         <div class="item">
             <article class="content-item">
                 <div class="content-item__wrap">
-                    <img src="img/content-image-56.jpg" class="content-item__image item-image" alt="">
+                    <img src="<?php print($noImageSrc)?>" class="content-item__image item-image" alt="">
 
                     <a href="#" class="content-item__hide-info">
                         <div class="content-item__price">
@@ -1628,7 +1628,7 @@ function loadData() {
             if (v.thumb)
                 element.find('.item-image').attr('src', v.thumb);
             else
-                element.find('.item-image').attr('src', 'data:;');
+                element.find('.item-image').attr('src', '<?php print($noImageSrc)?>');
             if (v.year)
                 element.find('.item-year').text(v.year);
             else
