@@ -55,7 +55,7 @@ $jsonReturnData = array(
     )
 );
 
-$allowedFilters = array('provider', 'year', 'country', 'genre');
+$allowedFilters = array('provider', 'year', 'country', 'genre_id');
 
 $perPage        = 15;
 $featureCount   = 10;

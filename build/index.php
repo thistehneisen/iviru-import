@@ -11,7 +11,7 @@ else
     $provider = 'ivi';
 
 $genres     = $db->getRows("SELECT `title`,`provider_id` FROM %s WHERE `provider`='%s'", $db->table('genres'), $provider);
-$years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'", $db->table('movies'), $provider);
+$years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s' ORDER BY `year` DESC", $db->table('movies'), $provider);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -987,6 +987,14 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 
     <div class="content-list__wrapper">
         <div class="wrapper">
+            <select name="genre">
+                <option value="null">- Show all -</option>
+                 <?php foreach ($genres as $genre) print("<option value=\"{$genre['provider_id']}\">{$genre['title']}</option>"); ?>
+            </select>
+            <select name="year">
+                <option value="null">- Show all -</option>
+                 <?php foreach ($years as $year) if (!empty($year['year'])) print("<option value=\"{$year['year']}\">{$year['year']}</option>"); ?>
+            </select>
             <div class="js---filter-container  filter--with-date  filter--layout  filter--left-align">
                 <div class="js---filter-item" data-filter-type="genre">
                     <ul data-hint="Жанр"
@@ -1340,9 +1348,34 @@ $years      = $db->getRows("SELECT DISTINCT `year` FROM %s WHERE `provider`='%s'
 <script src="js/script.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+    filter = Array;
+    filter['year'] = null;
+    filter['genre'] = null;
     page = 0;
     loadFeatures();
     loadData();
+});
+
+$(document).on('change', 'select[name="year"]', function(e){
+    var val = $(this).val();
+
+    if (val == null)
+        unset(filter['year']);
+    else
+        filter['year'] = val;
+
+    loadData(true, true);
+});
+
+$(document).on('change', 'select[name="genre"]', function(e){
+    var val = $(this).val();
+
+    if (val == null)
+        unset(filter['genre']);
+    else
+        filter['genre'] = val;
+
+    loadData(true, true);
 });
 
 $(document).on('click', '.load-more', function(e){
@@ -1380,8 +1413,18 @@ function loadFeatures() {
     });
 }
 
-function loadData() {
-    $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>, 'page':page}, function(response){
+function clearData() {
+    $('#cinema-items').find('.profile-content_block__cinema_item').remove();
+}
+
+function loadData(resetPages = false, clearContent = false) {
+    if (resetPages == true)
+        page = 0;
+
+    $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>, 'filter[year]':filter['year'], 'filter[genre_id]':filter['genre'], 'page':page}, function(response){
+        if (clearContent == true)
+            clearData();
+
         $.each(response, function(k,v){
             var element = $('#item-template').children().clone().hide().appendTo('#cinema-items');
             element.find('.item-name').text(v.title);

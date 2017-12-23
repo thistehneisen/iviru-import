@@ -8,7 +8,7 @@ $db = new db($database['config'], '_read');
 
 $where = array();
 foreach ((array)$_GET['filter'] as $key => $filter) {
-    if (in_array($key, $allowedFilters)) {
+    if (in_array($key, $allowedFilters) && $filter != null && $filter != 'null') {
         $key = $db->escape($key);
         $filter = $db->escape($filter);
         $where[] = "`{$key}`='$filter'";
