@@ -1070,7 +1070,7 @@ $countries  = $db->getRows("SELECT DISTINCT `country` FROM %s WHERE `provider`='
             <div class="profile-content_block_wrapper js---grid-block" id="cinema-items"></div>
         </div>
 
-        <a href="" class="btn content-list__btn load-more">
+        <a href="" class="btn content-list__btn load-more" id="load-more">
             Загрузить еще
         </a>
 
@@ -1432,6 +1432,7 @@ function loadFeatures() {
 
 function clearData() {
     $('#cinema-items').find('.profile-content_block__cinema_item').remove();
+    $('#load-more').fadeIn();
 }
 
 function loadData(resetPages = false, clearContent = false) {
@@ -1441,6 +1442,11 @@ function loadData(resetPages = false, clearContent = false) {
     $.getJSON('ajax.php', {'filter[provider]':<?php print(json_encode($provider))?>, 'filter[year]':filter['year'], 'filter[genre_id]':filter['genre'], 'filter[country]':filter['country'], 'page':page}, function(response){
         if (clearContent == true)
             clearData();
+        
+        if (response.length == 0) {
+            $('#load-more').fadeOut();
+            return true;
+        }
 
         $.each(response, function(k,v){
             var element = $('#item-template').children().clone().hide().appendTo('#cinema-items');
