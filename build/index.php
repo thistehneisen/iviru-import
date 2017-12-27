@@ -1352,12 +1352,14 @@ $countries  = $db->getRows("SELECT DISTINCT `country` FROM %s WHERE `provider`='
 <script src="js/vendor/jquery.sticky.js"></script>
 <script src="js/script.js"></script>
 <script type="text/javascript">
+perPage = <?php print($perPage)?>;
+filter = Array;
+filter['year'] = null;
+filter['genre'] = null;
+filter['country'] = null;
+page = 0;
+
 $(document).ready(function(){
-    filter = Array;
-    filter['year'] = null;
-    filter['genre'] = null;
-    filter['country'] = null;
-    page = 0;
     loadFeatures();
     loadData();
 });
@@ -1443,11 +1445,6 @@ function loadData(resetPages = false, clearContent = false) {
         if (clearContent == true)
             clearData();
         
-        if (response.length == 0) {
-            $('#load-more').fadeOut();
-            return true;
-        }
-
         $.each(response, function(k,v){
             var element = $('#item-template').children().clone().hide().appendTo('#cinema-items');
             element.find('.item-name').text(v.title);
@@ -1471,6 +1468,9 @@ function loadData(resetPages = false, clearContent = false) {
 
             element.fadeIn();
         });
+
+        if (response.length < perPage)
+            $('#load-more').hide();
 
         page++;
     });
