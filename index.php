@@ -85,6 +85,7 @@ foreach ($providers as $provider => $remote_url) {
                 foreach ($items as $item) {
                     $db->insert('movies', array(
                         'provider' => $provider,
+                        'provider_id' => ($provider == 'start' ? $item['_id'] : ($provider == 'ivi' ? $item['id'] : $item['clip__id'])),
                         'genre_id' => $insert['provider_id'],
                         'title' => ($provider == 'tvzaur' ? $item['clip__name'] : $item['title']),
                         'description' => ($provider == 'tvzaur' ? $item['clip__description'] : $item['description']),

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 23, 2017 at 08:19 PM
+-- Generation Time: Dec 27, 2017 at 06:29 PM
 -- Server version: 5.7.20-0ubuntu0.16.04.1
 -- PHP Version: 7.2.0-1+ubuntu16.04.1+deb.sury.org+1
 
@@ -31,7 +31,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `movies` (
   `id` int(11) NOT NULL,
   `provider` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `genre_id` int(11) NOT NULL,
+  `provider_id` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `genre_id` int(11) DEFAULT NULL,
   `title` varchar(256) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `year` int(11) DEFAULT NULL,
@@ -51,7 +52,7 @@ CREATE TABLE `movies` (
 --
 ALTER TABLE `movies`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `provider` (`provider`,`genre_id`);
+  ADD UNIQUE KEY `provider` (`provider`,`provider_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
