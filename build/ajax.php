@@ -3,6 +3,7 @@
 // init
 require_once '../vendor/db.class.php';
 require_once '../config.php';
+require_once '../helpers.php';
 
 $db = new db($database['config'], '_read');
 
@@ -32,28 +33,18 @@ else
 
 $response = array();
 foreach ((array)$result as $entry) {
+    $jsonData = json_decode($entry['data'], true);
     $tmpResponse = array(
         'title' => $entry['title'],
         'description' => $entry['description'],
         'year' => $entry['year'],
         'country' => $entry['country'],
         'genre_id' => $entry['genre_id'],
-        'provider' => $entry['provider']
+        'provider' => $entry['provider'],
+        'thumb' => getThumb($entry['provider'], $jsonData)
     );
 
-    $jsonData = json_decode($entry['data'], true);
-
-    if ($entry['provider'] == 'ivi')
-        $tmpResponse['thumb'] = $jsonData['thumbnails'][0]['path'];
-    else if ($entry['provider'] == 'start')
-        $tmpResponse['thumb'] = 'https://api.start.ru'.$jsonData['vertical']['image_15x'];
-    else if ($entry['provider'] == 'tvzaur')
-        $tmpResponse['thumb'] = $jsonData['image_vertical'];
-
-    foreach ($jsonReturnData[$entry['provider']] as $from => $to) {
-        if (!empty($jsonData[$from]))
-            $tmpResponse[$to] = $jsonData[$from];
-    }
+    $tmpResponse = array_merge($tmpResponse, convertData($entry['provider'], $jsonData));
 
     $response[] = $tmpResponse;
 }

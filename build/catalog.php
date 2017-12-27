@@ -1,3 +1,13 @@
+<?php
+
+// init
+require_once '../vendor/db.class.php';
+require_once '../config.php';
+require_once '../helpers.php';
+
+$db = new db($database['config'], '_read');
+$providers = array_keys($data);
+?>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -712,14 +722,11 @@
             </section>
         </div>
            
-
-          
-
-           
+<?php foreach ($providers as $provider) { ?>         
     <section class="content__row content">
         <div class="wrapper">
             <h2 class="title  title--x2 content__title">
-                IVI.ru
+                <?php print(strtoupper($provider))?>.ru
             </h2>
 
             <div class="content__slider content__slider--indent-mb">
@@ -728,23 +735,30 @@
                 </h3>
 
                 <div class="owl-carousel owl-theme">
+<?php
+$items = $db->getRows("SELECT * FROM %s WHERE `provider`='%s' ORDER BY `id` DESC LIMIT %d", $db->table('movies'), $provider, $featureCount);
+foreach ($items as $item) {
+    $jsonData = json_decode($item['data'], true);
+    $thumb = getThumb($item['provider'], $jsonData);
+    $extraData = convertData($item['provider'], $jsonData);
+?>
                     <div class="item">
                         <article class="content-item">
                             <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
+                                <img src="<?php print(!empty($thumb) ? $thumb : $noImageSrc)?>" class="content-item__image" alt="">
 
                                 <a href="#" class="content-item__hide-info">
                                     <div class="content-item__price">
                                         Купить<br>
-                                        <strong>от 0.99€</strong>
+                                        <strong>от - €</strong>
                                     </div>
 
                                     <div class="content-item__rating">
                           <span>
-                            <b>5.5</b> КиноПоиск
+                            <b><?php print(!empty($extraData['kp_rating']) ? $extraData['kp_rating'] : '-')?></b> КиноПоиск
                           </span>
                                         <span>
-                            <b>5.6</b> IMDb
+                            <b><?php print(!empty($extraData['imdb_rating']) ? $extraData['imdb_rating'] : '-')?></b> IMDb
                           </span>
                                     </div>
                                 </a>
@@ -752,277 +766,24 @@
 
                             <h3 class="content-item__name">
                                 <a href="#">
-                                    Джейми Оливер
+                                    <?php print(htmlspecialchars($item['title']))?>
                                 </a>
                             </h3>
 
                             <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    США
-                                </a>
+                                <?php if (!empty($item['year'])) {?><a href="#" class="content-item__info-item">
+                                    <?php print($item['year'])?>
+                                </a><?php } ?>
+                                <?php if (!empty($item['country']) && !is_numeric($item['country'])) {?><a href="#" class="content-item__info-item">
+                                    <?php print($item['country'])?>
+                                </a><?php } ?>
                                 <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
+                                    <?php print($db->getVar("SELECT `title` FROM %s WHERE `provider_id`='%d' AND `provider`='%s'", $db->table('genres'), $item['genre_id'], $provider))?>
                                 </a>
                             </div>
                         </article>
                     </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Девчата
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2016
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Реалити-шоу
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Танцы со звездами
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Музыкальные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Вечерний Ургант
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Развлекательные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Всем по котику
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Детские
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Вечерний Ургант
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Развлекательные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Всем по котику
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Детские
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
+<?php } ?>
                     <div class="item">
                       <div class="content__wrap">
                         <a href="#" class="content__btn">
@@ -1041,299 +802,56 @@
                 </h3>
 
                 <div class="owl-carousel owl-theme">
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
+                <?php
+                $items = $db->getRows("SELECT * FROM %s WHERE `provider`='%s' ORDER BY `rating` DESC LIMIT %d", $db->table('movies'), $provider, $featureCount);
+                foreach ($items as $item) {
+                    $jsonData = json_decode($item['data'], true);
+                    $thumb = getThumb($item['provider'], $jsonData);
+                    $extraData = convertData($item['provider'], $jsonData);
+                ?>
+                                    <div class="item">
+                                        <article class="content-item">
+                                            <div class="content-item__wrap">
+                                                <img src="<?php print(!empty($thumb) ? $thumb : $noImageSrc)?>" class="content-item__image" alt="">
+                
+                                                <a href="#" class="content-item__hide-info">
+                                                    <div class="content-item__price">
+                                                        Купить<br>
+                                                        <strong>от - €</strong>
+                                                    </div>
+                
+                                                    <div class="content-item__rating">
+                                          <span>
+                                            <b><?php print(!empty($extraData['kp_rating']) ? $extraData['kp_rating'] : '-')?></b> КиноПоиск
+                                          </span>
+                                                        <span>
+                                            <b><?php print(!empty($extraData['imdb_rating']) ? $extraData['imdb_rating'] : '-')?></b> IMDb
+                                          </span>
+                                                    </div>
+                                                </a>
+                                            </div>
+                
+                                            <h3 class="content-item__name">
+                                                <a href="#">
+                                                    <?php print(htmlspecialchars($item['title']))?>
+                                                </a>
+                                            </h3>
+                
+                                            <div class="content-item__info">
+                                                <?php if (!empty($item['year'])) {?><a href="#" class="content-item__info-item">
+                                                    <?php print($item['year'])?>
+                                                </a><?php } ?>
+                                                <?php if (!empty($item['country']) && !is_numeric($item['country'])) {?><a href="#" class="content-item__info-item">
+                                                    <?php print($item['country'])?>
+                                                </a><?php } ?>
+                                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
+                                                    <?php print($db->getVar("SELECT `title` FROM %s WHERE `provider_id`='%d' AND `provider`='%s'", $db->table('genres'), $item['genre_id'], $provider))?>
+                                                </a>
+                                            </div>
+                                        </article>
                                     </div>
+                <?php } ?>
 
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Непутевые заметки
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2001
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Познер
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2016
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Реалити-шоу
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Танцы
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Музыкальные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Кулинарная академия
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Роботы наступают
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Детские
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Непутевые заметки
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2001
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Кулинарная академия
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
                     <div class="item">
                       <div class="content__wrap">
                         <a href="#" class="content__btn">
@@ -1345,664 +863,12 @@
 
                 </div>
             </div>
-
-        <!--Genres -->
         </div>
     </section>
+<?php } ?>
 
-           
-      
-
-
-<section class="content__row content">
-        <div class="wrapper">
-            <h2 class="title  title--x2 content__title">
-                Tvzavr
-            </h2>
-
-            <div class="content__slider content__slider--indent-mb">
-                <h3 class="title  title--x4 content__subtitle">
-                    Новые
-                </h3>
-
-                <div class="owl-carousel owl-theme">
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Джейми Оливер
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    США
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Девчата
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2016
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Реалити-шоу
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Танцы со звездами
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Музыкальные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Вечерний Ургант
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Развлекательные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Всем по котику
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Детские
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Вечерний Ургант
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Развлекательные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Всем по котику
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Детские
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                      <div class="content__wrap">
-                        <a href="#" class="content__btn">
-                          <span></span>
-                          Все фильмы
-                        </a>
-                      </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <div class="content__slider content__slider--indent-mb">
-                <h3 class="title  title--x4 content__subtitle">
-                    Популярные
-                </h3>
-
-                <div class="owl-carousel owl-theme">
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Непутевые заметки
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2001
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Познер
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2016
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Реалити-шоу
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Танцы
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Музыкальные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Кулинарная академия
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Роботы наступают
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Детские
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Непутевые заметки
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2001
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-
-                    <div class="item">
-                        <article class="content-item">
-                            <div class="content-item__wrap">
-                                <img src="img/content-image-16.jpg" class="content-item__image" alt="">
-
-                                <a href="#" class="content-item__hide-info">
-                                    <div class="content-item__price">
-                                        Купить<br>
-                                        <strong>от 0.99€</strong>
-                                    </div>
-
-                                    <div class="content-item__rating">
-                          <span>
-                            <b>5.5</b> КиноПоиск
-                          </span>
-                                        <span>
-                            <b>5.6</b> IMDb
-                          </span>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <h3 class="content-item__name">
-                                <a href="#">
-                                    Кулинарная академия
-                                </a>
-                            </h3>
-
-                            <div class="content-item__info">
-                                <a href="#" class="content-item__info-item">
-                                    2015
-                                </a>
-                                <a href="#" class="content-item__info-item">
-                                    Россия
-                                </a>
-                                <a href="#" class="content-item__info-item  content-item__info-item--genre">
-                                    Кулинарные
-                                </a>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="item">
-                      <div class="content__wrap">
-                        <a href="#" class="content__btn">
-                          <span></span>
-                          Все фильмы
-                        </a>
-                      </div>
-                    </div>
-
-                </div>
-            </div>
-
-        <!--Genres -->
-        </div>
-    </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
-        </div>
-      </section>
+    </div>
+</section>
 
       
 <footer class="main-footer">
