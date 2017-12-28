@@ -6,7 +6,7 @@ function getThumb($provider, $jsonData) {
     else if ($provider == 'start')
         return 'https://api.start.ru'.$jsonData['vertical']['image_15x'];
     else if ($provider == 'tvzaur')
-        return $jsonData['image_vertical'];
+        return "http://cdn.tvzavr.ru/common/tvzstatic/cache/292x452/{$jsonData['clip__id']}.jpg";
 }
 
 function convertData($provider, $jsonData) {
